@@ -3,11 +3,17 @@
 CREATE TABLE IF NOT EXISTS games_in_progress
 (
     game_id     SERIAL      PRIMARY KEY,
-    platform    TEXT,
+    platform    TEXT,                         NOT NULL,
     player_ids  TEXT[]                        NOT NULL,
     board       BYTEA                         NOT NULL,
     created_at  TIMESTAMPTZ  DEFAULT NOW()    NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS moves
+(
+    game_id INT NOT NULL,
+    move_data BYTEA NOT NULL
+)
 
 CREATE TABLE IF NOT EXISTS completed_games
 (
@@ -15,8 +21,8 @@ CREATE TABLE IF NOT EXISTS completed_games
      platform TEXT,
      board BYTEA NOT NULL,
      num_moves INT,
-     created_at TIMESTAMPTZ,
-     completed_at TIMESTAMPTZ
+     created_at TIMESTAMPTZ NOT NULL,
+     completed_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS player_game_results

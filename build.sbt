@@ -6,17 +6,25 @@ ThisBuild / resolvers += "Maven Central Server" at "https://repo1.maven.org/mave
 
 resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
+//versions
 val AwsVersion = "2.19.4"
+val TranzactIOVersion = "2.0.0"
+val DoobieVersion = "0.12.1"
 
 val aws = Seq(
   "software.amazon.awssdk" % "dynamodb" % AwsVersion
 )
 
-lazy val grpc = Seq(
+val grpc = Seq(
   "io.grpc" % "grpc-netty" % "1.41.0",
   "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion)
 
-val dependencies = aws ++ grpc
+val db = Seq(
+  "io.github.gaelrenoux" %% "tranzactio" % TranzactIOVersion,
+  "org.tpolecat" %% "doobie-core" % DoobieVersion
+)
+
+val dependencies = aws ++ grpc ++ db
 
 lazy val root = (project in file("."))
   .settings(name := "SOCDataCollector")
@@ -29,5 +37,3 @@ lazy val root = (project in file("."))
       (ThisBuild / baseDirectory).value / "src" / "main" / "protobuf"
     ))
   .settings(libraryDependencies ++= dependencies)
-
-
