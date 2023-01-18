@@ -1,6 +1,7 @@
-package soc.datacollector.game
+package soc.datacollector.game.store
 
 import io.github.gaelrenoux.tranzactio.doobie.Database
+import soc.datacollector.game.store.GameRecorderStore
 import soc.datacollector.{ConnectionPool, DbConfig, GameId}
 import zio.blocking.Blocking
 import zio.clock.Clock
