@@ -1,11 +1,11 @@
 package soc.datacollector
 
-final case class GameId(id: String) extends AnyVal
+final case class GameId(id: Int) extends AnyVal
 
 object domain {
 
-  type MOVE = Any
-  type BOARD = Any
+  type MOVE = Unit
+  type BOARD = Unit
   type GAME = SOCGame
   type PlayerId = String
 

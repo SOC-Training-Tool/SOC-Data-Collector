@@ -28,9 +28,15 @@ message StartRecordingRequest {
   BaseBoard board = 2;
 }
 
+message StartRecordingResponse {
+  GameId id = 1;
+  int32 initial_move_number = 2;
+}
+
 message RecordMoveRequest {
   GameId id = 1;
   MoveEvent move = 2;
+  int32 previous_move_number = 3;
 }
 
 message MoveEvent {
@@ -56,11 +62,11 @@ message MoveEvent {
 
 message RecordMoveResponse {
   int32 move_number = 1;
-
 }
 
 message CompleteRecordingRequest {
   GameId id = 1;
+  int32 num_moves = 2;
 }
 
 message CompleteRecordingResponse {

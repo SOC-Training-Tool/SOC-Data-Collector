@@ -8,7 +8,7 @@ import java.time.OffsetDateTime
 
 final case class StartRecordingGame(playerIds: Map[Int, PlayerId], board: BOARD)
 
-final case class StartGameData(gameId: GameId, platform: String, playerIds: Seq[String], board: BOARD, createdAt: OffsetDateTime)
+final case class StartGameData(gameId: GameId, platform: String, playerIds: Seq[String], numMoves: Int, board: BOARD, createdAt: OffsetDateTime)
 
 final case class RecordMove(gameId: String, move: MOVE)
 
