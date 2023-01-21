@@ -24,7 +24,8 @@ val db = Seq(
   "io.github.gaelrenoux" %% "tranzactio" % TranzactIOVersion,
   "org.tpolecat" %% "doobie-core" % DoobieVersion,
   "org.tpolecat" %% "doobie-postgres" % DoobieVersion,
-"com.zaxxer" % "HikariCP" % "5.0.1"
+  "com.zaxxer" % "HikariCP" % "5.0.1",
+  "org.postgresql" % "postgresql" % "42.4.1"
 )
 
 val zioTest = Seq(
@@ -34,6 +35,8 @@ val zioTest = Seq(
 testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
 val dependencies = aws ++ grpc ++ db ++ zioTest
+
+
 
 lazy val root = (project in file("."))
   .settings(name := "SOCDataCollector")
@@ -48,3 +51,4 @@ lazy val root = (project in file("."))
   .configs(IntegrationTest)
   .settings(Defaults.itSettings)
   .settings(libraryDependencies ++= dependencies)
+  .settings(libraryDependencies += "dev.zio" %% "izumi-reflect" % "1.0.0-M2")

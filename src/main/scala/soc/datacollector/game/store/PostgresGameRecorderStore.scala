@@ -1,47 +1,69 @@
 package soc.datacollector.game.store
 
-import io.github.gaelrenoux.tranzactio.doobie.{Database, tzio}
-import Database.{Database => Db}
-import doobie.Meta
+import io.github.gaelrenoux.tranzactio.doobie.{Connection, Database, tzio}
+import doobie._
+import doobie.postgres._
+import doobie.postgres.implicits._
+import doobie.postgres.pgisimplicits._
 import doobie.implicits.toSqlInterpolator
+import io.github.gaelrenoux.tranzactio.DbException
+import io.soc.recorder.game_recorder.MoveEvent.Move
 import soc.datacollector.GameId
 import soc.datacollector.domain.{BOARD, MOVE, PlayerId}
 import soc.datacollector.game.store.GameRecorderStore.Service
+import soc.datacollector.game.store.PostgresGameRecorderStore.PgEnv
 import soc.datacollector.game.{CompleteRecordingGameResult, StartGameData}
-import zio.{Has, ULayer, ZIO, ZLayer}
+import zio.console.Console
+import zio.{Has, Tag, Task, ULayer, ZIO, ZLayer, console}
 
 object PostgresGameRecorderStore {
 
-  val live: ULayer[Has[Service[Db]]] = ZLayer.succeed(new PostgresGameRecorderStore())
+  type PgEnv = Database.Database with Console
 
-  implicit val moveMeta: Meta[MOVE] = Meta[Int].timap[Unit](_ => ())( _ => 1)
-  implicit val boardMeta: Meta[BOARD] = Meta[Int].timap[Unit](_ => ())( _ => 1)
+  object implicits {
+    implicit val movePut: Put[MOVE] = Put[List[Byte]].tcontramap[MOVE](_ => List[Byte](1, 0, 1))
+    implicit val moveGet: Get[MOVE] = Get[List[Byte]].tmap(_ => ())
+
+//    implicit val boardPut: Put[BOARD] = Put[List[Byte]].tcontramap[BOARD](_ => List[Byte](1, 0, 1))
+//    implicit val boardGet: Get[BOARD] = Get[List[Byte]].tmap(_ => ())
+
+    implicit val playerIdMeta: Meta[Seq[PlayerId]] = Meta[Array[PlayerId]].imap(_.toSeq)(_.toArray)
+  }
 
 
 }
 
-class PostgresGameRecorderStore extends GameRecorderStore.Service[Db] {
-  override def startRecording(platform: String, playerIds: Seq[String], board: BOARD): ZIO[Db, Throwable, GameId] = {
-    Database.transactionOrWiden(tzio(insertInProgressGameQuery(platform, playerIds, board).unique))
+class PostgresGameRecorderStore extends GameRecorderStore.Service[PgEnv] {
+
+  import PostgresGameRecorderStore.implicits._
+
+  override def startRecording(platform: String, playerIds: Seq[String], board: BOARD): ZIO[PgEnv, Throwable, GameId] = {
+    val transaction = tzio(insertInProgressGameQuery(platform, playerIds, board).unique)
+    Database.transactionOrWidenR(transaction)
   }
 
-  override def completeRecording(gameId: GameId, totalMoveCount: Int): ZIO[Db, Throwable, CompleteRecordingGameResult] = {
-    Database.transactionOrWiden(for {
+  override def completeRecording(gameId: GameId, totalMoveCount: Int): ZIO[PgEnv, Throwable, CompleteRecordingGameResult] = {
+    val transaction = for {
       delete <- tzio(deleteInProgressGameQuery(gameId).unique)
-      numMoves <- ZIO.cond(delete.numMoves == totalMoveCount, delete.numMoves, new Exception("boom!"))
+      _ <- console.putStrLn(delete.toString)
+      numMoves <- ZIO.cond(delete.numMoves == totalMoveCount, delete.numMoves, DbException.Wrapped(new Exception("boom!")))
+      _ <- console.putStrLn(numMoves.toString)
       _ <- tzio(insertCompletedGameQuery(delete).run)
       _ <- ZIO.collectAll_(delete.playerIds.zipWithIndex.map { case (playerId, position) =>
         tzio(insertPlayerGameResultQuery(delete.gameId, playerId, position).run)
       })
-    } yield CompleteRecordingGameResult(numMoves))
+    } yield CompleteRecordingGameResult(numMoves)
+
+    Database.transactionOrWidenR(transaction)
   }
 
-  def recordMove(gameId: GameId, previousMoveNumber: Int, move: MOVE) = {
-    Database.transactionOrWiden(for {
-      numMoveOpt <- tzio(insertMoveRecord(gameId, move, previousMoveNumber).option)
-      numMove <- ZIO.getOrFailWith(new Exception("boom!"))(numMoveOpt)
+  def recordMove(gameId: GameId, previousMoveNumber: Int, move: MOVE): ZIO[PgEnv, Throwable, Int] = {
+    val transaction = for {
+      numMove <- tzio(insertMoveRecord(gameId, move, previousMoveNumber).unique)
       _ <- tzio(updateMoveNumInProgressGameQuery(gameId, numMove).run)
-    } yield numMove)
+    } yield numMove
+
+    Database.transactionOrWidenR(transaction)
   }
 
   private def insertInProgressGameQuery(platform: String, playerIds: Seq[PlayerId], board: BOARD): doobie.Query0[GameId] =
