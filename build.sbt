@@ -10,7 +10,7 @@ resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 val AwsVersion = "2.19.4"
 val TranzactIOVersion = "2.0.0"
 val DoobieVersion = "0.12.1"
-val ZIOVersion = "1.0.5"
+val ZIOVersion = "1.0.15"
 
 val aws = Seq(
   "software.amazon.awssdk" % "dynamodb" % AwsVersion
@@ -25,18 +25,21 @@ val db = Seq(
   "org.tpolecat" %% "doobie-core" % DoobieVersion,
   "org.tpolecat" %% "doobie-postgres" % DoobieVersion,
   "com.zaxxer" % "HikariCP" % "5.0.1",
-  "org.postgresql" % "postgresql" % "42.4.1"
+  "org.postgresql" % "postgresql" % "42.5.1"
 )
 
 val zioTest = Seq(
   "dev.zio" %% "zio-test"          % ZIOVersion % "test,it",
   "dev.zio" %% "zio-test-sbt"      % ZIOVersion % "test,it",
 )
+val zioTestContainers = Seq(
+  "io.github.scottweaver" %% "zio-testcontainers-postgresql" % "0.9.0",
+  "io.github.scottweaver" %% "zio-db-migration-aspect" % "0.9.0"
+).map(_ % "it")
+
 testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
-val dependencies = aws ++ grpc ++ db ++ zioTest
-
-
+val dependencies = grpc ++ db ++ zioTest ++ zioTestContainers
 
 lazy val root = (project in file("."))
   .settings(name := "SOCDataCollector")
@@ -48,7 +51,9 @@ lazy val root = (project in file("."))
     Compile / PB.protoSources := Seq(
       (ThisBuild / baseDirectory).value / "src" / "main" / "protobuf"
     ))
+  .settings(Test / fork := true)
   .configs(IntegrationTest)
   .settings(Defaults.itSettings)
+  .settings(IntegrationTest / fork := true)
   .settings(libraryDependencies ++= dependencies)
   .settings(libraryDependencies += "dev.zio" %% "izumi-reflect" % "1.0.0-M2")

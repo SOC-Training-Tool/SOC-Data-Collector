@@ -6,15 +6,16 @@ CREATE TABLE IF NOT EXISTS games_in_progress
     platform    TEXT                          NOT NULL,
     player_ids  TEXT[]                        NOT NULL,
     board       BYTEA                         NOT NULL,
-    num_moves   INT,
-    created_at  TIMESTAMPTZ  DEFAULT NOW()    NOT NULL
+    num_moves   INT                           DEFAULT 0,
+    created_at  TIMESTAMPTZ                   NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS moves
 (
     game_id INT NOT NULL,
     move_number INT,
-    move_data BYTEA NOT NULL
+    move_data BYTEA NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS completed_games
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS completed_games
      board BYTEA NOT NULL,
      num_moves INT,
      created_at TIMESTAMPTZ NOT NULL,
-     completed_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+     completed_at TIMESTAMPTZ NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS player_game_results

@@ -12,6 +12,7 @@ service MovesStore {
   rpc StartRecording(StartRecordingRequest) returns (GameId);
   rpc RecordMove(RecordMoveRequest) returns (RecordMoveResponse);
   rpc CompleteRecording(CompleteRecordingRequest) returns (CompleteRecordingResponse);
+  rpc GetLastRecordedMove(GetLastRecordedMoveRequest) returns (GetLastRecordedMoveResponse);
 }
 
 message GameId {
@@ -71,4 +72,13 @@ message CompleteRecordingRequest {
 
 message CompleteRecordingResponse {
   int32 move_count = 1;
+}
+
+message GetLastRecordedMoveRequest {
+  GameId id = 1;
+}
+
+message GetLastRecordedMoveResponse {
+  int32 move_number = 1;
+  MoveEvent move = 2;
 }

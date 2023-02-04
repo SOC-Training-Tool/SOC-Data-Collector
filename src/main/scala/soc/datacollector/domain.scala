@@ -1,16 +1,13 @@
 package soc.datacollector
 
+import io.soc.recorder.game_recorder.MoveEvent
+
 final case class GameId(id: Int) extends AnyVal
 
-object domain {
+final case class Move(data: MoveEvent) extends AnyVal
 
-  type MOVE = Unit
-  type BOARD = Unit
-  type GAME = SOCGame
-  type PlayerId = String
+final case class Board(data: Unit) extends AnyVal
 
-  case class SOCGame(gameId: GameId, playerId: List[PlayerId], board: BOARD, moves: List[MOVE])
-}
 
 
 
