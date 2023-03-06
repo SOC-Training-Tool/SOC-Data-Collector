@@ -9,7 +9,7 @@ resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 //versions
 val AwsVersion = "2.19.4"
 val TranzactIOVersion = "2.0.0"
-val DoobieVersion = "0.12.1"
+val DoobieVersion = "0.13.4"
 val ZIOVersion = "1.0.15"
 
 val aws = Seq(
@@ -30,7 +30,7 @@ val db = Seq(
 
 val zioTest = Seq(
   "dev.zio" %% "zio-test"          % ZIOVersion % "test,it",
-  "dev.zio" %% "zio-test-sbt"      % ZIOVersion % "test,it",
+  "dev.zio" %% "zio-test-sbt"      % ZIOVersion % "test,it"
 )
 val zioTestContainers = Seq(
   "io.github.scottweaver" %% "zio-testcontainers-postgresql" % "0.9.0",

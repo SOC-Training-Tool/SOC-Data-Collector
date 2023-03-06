@@ -4,7 +4,7 @@ services:
     image: flyway/flyway
     command: -locations=filesystem:/flyway/sql -url=jdbc:postgresql://postgres:5432/mydb -user=postgres -password=postgres -connectRetries=60 migrate
     volumes:
-      - ./migrations:/flyway/sql
+      - ./db/migration:/flyway/sql
     depends_on:
       postgres:
         condition: service_healthy
