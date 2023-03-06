@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.soc.core.base";
+
+package io.soc;
+
+message Hex {
+  enum HexType {
+    UNKNOWN = 0;
+    WATER = 1;
+    WOOD = 2;
+    BRICK = 3;
+    SHEEP = 4;
+    WHEAT = 5;
+    ORE = 6;
+  }
+  HexType type = 1;
+  int32 number = 2;
+  repeated Vertex adjacent_vertices = 3;
+}
+
+message Port {
+  enum PortType {
+    UNKNOWN = 0;
+    THREE_FOR_ONE = 1;
+    WOOD = 2;
+    BRICK = 3;
+    SHEEP = 4;
+    WHEAT = 5;
+    ORE = 6;
+  }
+  PortType port = 1;
+}
+
+message BaseBoard {
+  message Hexes {
+    Hex hex1 = 1;
+    Hex hex2 = 2;
+    Hex hex3 = 3;
+    Hex hex4 = 4;
+    Hex hex5 = 5;
+    Hex hex6 = 6;
+    Hex hex7 = 7;
+    Hex hex8 = 8;
+    Hex hex9 = 9;
+    Hex hex10 = 10;
+    Hex hex11 = 11;
+    Hex hex12 = 12;
+    Hex hex13 = 13;
+    Hex hex14 = 14;
+    Hex hex15 = 15;
+    Hex hex16 = 16;
+    Hex hex17 = 17;
+    Hex hex18 = 18;
+    Hex hex19 = 19;
+  }
+  message Ports {
+    Port port1 = 1;
+    Port port2 = 2;
+    Port port3 = 3;
+    Port port4 = 4;
+    Port port5 = 5;
+    Port port6 = 6;
+    Port port7 = 7;
+    Port port8 = 8;
+    Port port9 = 9;
+  }
+  Hexes hexes = 1;
+  Ports ports = 2;
+}
+
+message Vertex {
+  string id = 1;
+}
+
+message Edge {
+  Vertex v1 = 1;
+  Vertex v2 = 2;
+}
+
+

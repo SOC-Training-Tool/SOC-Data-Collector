@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.soc.core";
+
+package io.soc;
+
+message Resource {
+  enum ResourceType {
+    UNKNOWN = 0;
+    WOOD = 1;
+    Brick = 2;
+    Sheep = 3;
+    WHEAT = 4;
+    ORE = 5;
+  }
+  ResourceType res = 1;
+}
+
+message ResourceSet {
+  repeated Resource resources = 1;
+}
+
+message DevelopmentCard {
+  enum DevelopmentCardType {
+    UNKNOWN = 0;
+    KNIGHT = 1;
+    VICTORY_POINT = 2;
+    ROAD_BUILDER = 3;
+    YEAR_OF_PLENTY = 4;
+    MONOPOLY = 5;
+  }
+  DevelopmentCardType card = 1;
+}
+

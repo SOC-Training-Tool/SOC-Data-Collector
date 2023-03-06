@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.soc.core.base";
+
+package io.soc;
+
+import "resources.proto";
+import "board.proto";
+
+message BuildSettlement {
+  Vertex vertex = 1;
+}
+
+message BuildCity {
+  Vertex vertex = 1;
+}
+
+message BuildRoad {
+  Edge edge = 1;
+}
+
+message InitialPlacement {
+  Vertex vertex = 1;
+  Edge edge = 2;
+}
+
+message RollDice {
+  message RollDiceResult {
+    int32 number = 1;
+  }
+  RollDiceResult result = 1;
+}
+
+message PortTrade {
+  ResourceSet give = 1;
+  ResourceSet get = 2;
+}
+
+message MoveRobberAndSteal {
+  message Steal {
+    Resource stolen_resource = 1;
+  }
+  Hex robber_location = 1;
+  int32 player_to_steal = 2;
+  Steal result = 3;
+}
+
+message DiscardResources {
+  int32 player_to_discard = 1;
+  ResourceSet resources_to_discard = 2;
+}
+
+message BuyDevelopmentCard {
+  message BuyDevelopmentCardResult {
+    DevelopmentCard card = 1;
+  }
+  BuyDevelopmentCardResult result = 1;
+}
+
+message PlayKnight {
+  MoveRobberAndSteal knight = 1;
+}
+
+message PlayYearOfPlenty {
+  Resource res1 = 1;
+  Resource res2 = 2;
+}
+
+message PlayRoadBuilder {
+  Edge road1 = 1;
+  Edge road2 = 2;
+}
+
+message PlayMonopoly {
+  message MonopolyResult {
+    map<int32, ResourceSet> resources_monopolised_from_players = 1;
+  }
+  Resource res = 1;
+  MonopolyResult result = 2;
+}

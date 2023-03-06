@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.soc.recorder";
+
+package io.soc;
+
+import "board.proto";
+import "moves.proto";
+
+service MovesStore {
+  rpc StartRecording(StartRecordingRequest) returns (GameId);
+  rpc RecordMove(RecordMoveRequest) returns (RecordMoveResponse);
+  rpc CompleteRecording(CompleteRecordingRequest) returns (CompleteRecordingResponse);
+  rpc GetLastRecordedMove(GetLastRecordedMoveRequest) returns (GetLastRecordedMoveResponse);
+}
+
+message GameId {
+  string id = 1;
+}
+
+message PlayerId {
+  string platform = 1;
+  string user_id = 2;
+}
+
+message StartRecordingRequest {
+  map<int32, PlayerId> player_position_id_map = 1;
+  BaseBoard board = 2;
+}
+
+message StartRecordingResponse {
+  GameId id = 1;
+  int32 initial_move_number = 2;
+}
+
+message RecordMoveRequest {
+  GameId id = 1;
+  MoveEvent move = 2;
+  int32 previous_move_number = 3;
+}
+
+message MoveEvent {
+  oneof move {
+    InitialPlacement initial_placement_move = 1;
+    RollDice roll_dice_move = 2;
+    BuildSettlement build_settlement_move = 3;
+    BuildRoad build_road_move = 4;
+    BuildCity build_city_move = 5;
+    MoveRobberAndSteal move_robber_and_steal_move = 6;
+    DiscardResources discard_move = 7;
+    PortTrade port_trade_move = 8;
+
+    //Trade moves go here 10-1x
+
+    BuyDevelopmentCard buy_development_card_move = 20;
+    PlayKnight play_knight_move = 21;
+    PlayYearOfPlenty play_year_of_plenty_move = 22;
+    PlayRoadBuilder play_road_builder_move = 23;
+    PlayMonopoly play_monopoly_move = 24;
+  }
+}
+
+message RecordMoveResponse {
+  int32 move_number = 1;
+}
+
+message CompleteRecordingRequest {
+  GameId id = 1;
+  int32 num_moves = 2;
+}
+
+message CompleteRecordingResponse {
+  int32 move_count = 1;
+}
+
+message GetLastRecordedMoveRequest {
+  GameId id = 1;
+}
+
+message GetLastRecordedMoveResponse {
+  int32 move_number = 1;
+  MoveEvent move = 2;
+}
