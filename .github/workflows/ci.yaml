@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: setup-scala
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v11
       - name: Compile
         run: sbt clean compile
       - name: Run tests
