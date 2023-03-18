@@ -53,9 +53,8 @@ object GameDataQueriesSpec extends DefaultRunnableSpec{
   }
 
   override def spec: ZSpec[TestEnvironment, Any] = (suite("GameDataQueries")(
-    //dataRecordingSuite, dataAccessSuite) @@ DbMigrationAspect.migrateOnce("filesystem:db/migration")()).provideSomeLayerShared[TestEnvironment](layer)
-    dataRecordingSuite, dataAccessSuite)).provideSomeLayerShared[TestEnvironment](layer)
-
+    dataRecordingSuite, dataAccessSuite) @@ DbMigrationAspect.migrateOnce("filesystem:db/migration")()).provideSomeLayerShared[TestEnvironment](layer)
+    //dataRecordingSuite, dataAccessSuite)).provideSomeLayerShared[TestEnvironment](layer)
 
   private val startRecordingSuite = suite("startRecording")()
 
