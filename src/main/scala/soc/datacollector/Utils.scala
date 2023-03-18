@@ -1,6 +1,6 @@
 package soc.datacollector
 
-import zio.{URIO}
+import zio.URIO
 import zio.clock.Clock
 
 import java.time.{OffsetDateTime, ZoneId}

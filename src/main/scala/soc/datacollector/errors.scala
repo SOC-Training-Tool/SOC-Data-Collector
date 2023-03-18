@@ -14,7 +14,7 @@ final case class StoreError(ex: DbException) extends AppError
 object handler {
 
   def mapError = (_: AppError) match {
-    case GameNotFoundError(gameId) => Status.NOT_FOUND
+    case GameNotFoundError(_) => Status.NOT_FOUND
     case StoreError(_) => Status.INTERNAL
   }
 

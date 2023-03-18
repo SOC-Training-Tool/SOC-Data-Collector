@@ -6,11 +6,19 @@ ThisBuild / resolvers += "Maven Central Server" at "https://repo1.maven.org/mave
 
 resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
+enablePlugins(
+  JavaAppPackaging,
+  DockerPlugin
+)
+
+dockerBaseImage := "openjdk:11"
+
 //versions
 val AwsVersion = "2.19.4"
 val TranzactIOVersion = "2.0.0"
 val DoobieVersion = "0.13.4"
 val ZIOVersion = "1.0.15"
+val ZIOConfigVersion = "1.0.10"
 
 val aws = Seq(
   "software.amazon.awssdk" % "dynamodb" % AwsVersion
@@ -37,9 +45,15 @@ val zioTestContainers = Seq(
   "io.github.scottweaver" %% "zio-db-migration-aspect" % "0.9.0"
 ).map(_ % "it")
 
+val zioConfig = Seq(
+  "dev.zio" %% "zio-config" % ZIOConfigVersion,
+  "dev.zio" %% "zio-config-magnolia" % ZIOConfigVersion,
+  "dev.zio" %% "zio-config-typesafe" % ZIOConfigVersion
+)
+
 testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
-val dependencies = grpc ++ db ++ zioTest ++ zioTestContainers
+val dependencies = grpc ++ db ++ zioTest ++ zioTestContainers ++ zioConfig
 
 lazy val root = (project in file("."))
   .settings(name := "SOCDataCollector")
