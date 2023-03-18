@@ -38,18 +38,18 @@ object GameDataQueriesSpec extends DefaultRunnableSpec{
 
   private val layer = {
 
-    //val postgres = ZPostgreSQLContainer.Settings.default >>> ZPostgreSQLContainer.live
+    val postgres = ZPostgreSQLContainer.Settings.default >>> ZPostgreSQLContainer.live
 
-    val dbConfig = ZLayer.succeed(DbConfig(PgConfig("jdbc:postgresql://localhost:5432/mydb", "postgres", "postgres"), None))
+    //val dbConfig = ZLayer.succeed(DbConfig(PgConfig("jdbc:postgresql://localhost:5432/mydb", "postgres", "postgres"), None))
 
-    val dataSource = (dbConfig ++ Blocking.any) >>> ConnectionPool.live
-    //val databaseLayer: ZLayer[Blocking with Clock, Throwable, doobie.Database.Database] = (postgres ++ Blocking.any ++ Clock.any) >>> Database.fromDatasource
-    val databaseLayer: ZLayer[Blocking with Clock, Throwable, doobie.Database.Database] = (dataSource ++ Blocking.any ++ Clock.any) >>> Database.fromDatasource
+    //val dataSource = (dbConfig ++ Blocking.any) >>> ConnectionPool.live
+    val databaseLayer: ZLayer[Blocking with Clock, Throwable, doobie.Database.Database] = (postgres ++ Blocking.any ++ Clock.any) >>> Database.fromDatasource
+    //val databaseLayer: ZLayer[Blocking with Clock, Throwable, doobie.Database.Database] = (dataSource ++ Blocking.any ++ Clock.any) >>> Database.fromDatasource
 
     val storeLayer = GameDataQueries.live
 
-    //(postgres ++ databaseLayer ++ storeLayer).mapError(TestFailure.fail)
-    (databaseLayer ++ storeLayer).mapError(TestFailure.fail)
+    (postgres ++ databaseLayer ++ storeLayer).mapError(TestFailure.fail)
+    //(databaseLayer ++ storeLayer).mapError(TestFailure.fail)
   }
 
   override def spec: ZSpec[TestEnvironment, Any] = (suite("GameDataQueries")(
