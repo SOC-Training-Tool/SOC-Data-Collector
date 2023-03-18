@@ -32,6 +32,8 @@ message RollDice {
   RollDiceResult result = 1;
 }
 
+message EndTurn {}
+
 message PortTrade {
   ResourceSet give = 1;
   ResourceSet get = 2;

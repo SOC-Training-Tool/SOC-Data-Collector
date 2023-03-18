@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS games_in_progress
     created_at  TIMESTAMPTZ                   NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS moves
+CREATE TABLE IF NOT EXISTS moves_in_progress
 (
     game_id INT NOT NULL,
     move_number INT,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS moves
     created_at TIMESTAMPTZ NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS completed_games
+CREATE TABLE IF NOT EXISTS games_completed
 (
      game_id INT PRIMARY KEY,
      platform TEXT,
@@ -35,5 +35,12 @@ CREATE TABLE IF NOT EXISTS player_game_results
     player_number INT
 --    points INT,
 --    winner BOOL
+);
+
+CREATE TABLE IF NOT EXISTS moves_completed(
+    game_id INT NOT NULL,
+    move_number INT,
+    move_data BYTEA NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
 );
 

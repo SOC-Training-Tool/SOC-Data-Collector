@@ -1,10 +1,26 @@
 version: '3.8'
 services:
+
+  app:
+    image: socdatacollector:0.1.0-SNAPSHOT
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+    environment:
+      - GRPC_SERVICE_PORT
+      - DATASOURCE_APP_URL
+      - DATASOURCE_APP_USERNAME
+      - DATASOURCE_APP_PASSWORD
+    ports:
+      - "${GRPC_SERVICE_PORT}:${GRPC_SERVICE_PORT}"
+
   flyway:
     image: flyway/flyway
     command: -locations=filesystem:/flyway/sql -url=jdbc:postgresql://postgres:5432/mydb -user=postgres -password=postgres -connectRetries=60 migrate
     volumes:
-      - ./migrations:/flyway/sql
+      - ./db/migration:/flyway/sql
     depends_on:
       postgres:
         condition: service_healthy

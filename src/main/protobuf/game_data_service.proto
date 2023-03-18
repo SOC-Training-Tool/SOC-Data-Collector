@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.soc.data";
+
+import "board.proto";
+import "game_data_core.proto";
+
+package io.soc;
+
+service GameDataService {
+  rpc GetGameById(GetGameInfoByIdRequest) returns (GetGameInfoResponse);
+  rpc GetGamesByPlayer(GetGameInfoForPlayerRequest) returns (stream GetGameInfoResponse);
+  rpc GetGameRawMoves(GetGameRawMovesRequest) returns (stream GetGameRawMovesResponse);
+}
+
+message GetGameInfoByIdRequest {
+  string platform = 1;
+  GameId id = 2;
+}
+
+message GetGameInfoForPlayerRequest {
+  string platform = 1;
+  PlayerId id = 2;
+}
+
+message GetGameInfoResponse {
+  GameId id = 1;
+  string platform = 2;
+  map<int32, PlayerId> playerIds = 3;
+  BaseBoard board = 4;
+}
+
+message GetGameRawMovesRequest {
+  string platform = 1;
+  GameId id = 2;
+}
+
+message GetGameRawMovesResponse {
+  MoveEvent move = 1;
+}
